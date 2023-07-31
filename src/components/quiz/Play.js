@@ -16,7 +16,7 @@ class Play extends React.Component {
                                 </Helmet>
 
                                 <div className="bg-[#02001c] p-10 min-h-screen bg-[url('https://transparenttextures.com/patterns/asfalt-light.png')]">
-                                        <div className="flex flex-col justify-center items-center  backdrop-opacity-10">
+                                        <div className="flex flex-col justify-center items-center backdrop-opacity-10">
                                                 <h5 className="text-white text-[2rem] pt-10 pb-8">Simple Quiz Mode</h5>
                                                 <div className="text-white rounded-r-xl border-l-8 border-blue-900 bg-blue-900/50 w-[22.6rem] md:w-[600px] p-4">
                                                         <div className="flex justify-between">
@@ -41,10 +41,11 @@ class Play extends React.Component {
                                                                 </div>
                                                         </div>
                                                 </div>
-                                                        <div className="my-10 ">
-                                                                <Link to="/play/instructions" className="bg-gray-500 hover:bg-gray-300 rounded p-2 px-5">&lt;&lt; Previous</Link>
-                                                                <Link to="/" className="bg-green-600 hover:bg-green-400 p-2 px-5 mx-4 rounded">Next &gt;&gt;</Link>
-                                                                <Link to="/" className="bg-red-600 hover:bg-red-500 p-2 px-5 rounded">Quit <span className="font-bold pl-1"> x</span></Link>
+                                                        <div className="my-10">
+                                                                
+                                                                <Link to="/play/instructions" className="bg-gray-500 hover:bg-gray-300 rounded p-2 px-3">&lt;&lt; Previous</Link>
+                                                                <Link to="/" className="bg-green-600 hover:bg-green-400 p-2 px-3 mx-2 md:mx-6 rounded">Next &gt;&gt;</Link>
+                                                                <Link to="/" className="bg-red-600 hover:bg-red-500 p-2 px-3 rounded">Quit <span className="font-bold pl-1"> x</span></Link>
                                                         </div>
                                         </div>
                                 </div>
