@@ -19,7 +19,7 @@ const QuizInstructions = () => (
                   p-10 leading-9">
                         <h1 className="text-3xl text-center sm:text-5xl underline underline-offset-8 py-10">How to Play the Game</h1>
                         <p className="text-2xl pb-6">Ensure you read this guide from start to finish.</p>
-                        <ul className="list-disc ml-20">
+                        <ul className="list-disc ml-9">
                               <li>
                                     The game has a duration of 15 minutes and ends as soon as your time elapses.
                               </li>
@@ -27,7 +27,7 @@ const QuizInstructions = () => (
                               <li>Every question contains 4 options.</li>
                               <li>Select the option which best answers the question by clicking (or selecting) it.</li>
                               <li>Each game has 2 lifelines, namely:
-                                    <ul className="list-disc ml-8">
+                                    <ul className="list-disc ml-6">
                                           <li>2 50-50 chances</li>
                                           <li>5 Hints</li>
                                     </ul>
