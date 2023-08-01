@@ -41,7 +41,7 @@ const QuizInstructions = () => (
                               <li>The timer starts as soon as the game starts.</li>
                               <li>Let's do this if you think you've got what it takes!🚀</li>
                         </ul>
-                        <div className="mt-4">
+                        <div className="mt-8 mb-10">
                               <Link to="/" className="float-left text-blue-400">No, take me back.</Link>
                               <Link to="/play/quiz" className="float-right text-blue-400">Okay, let's do this!</Link>
                         </div>

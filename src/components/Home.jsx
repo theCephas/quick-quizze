@@ -16,11 +16,11 @@ const Home = () => (
                         </ul>
                         <div className="flex justify-between mt-16 md:mt-20 mb-20">
                                 
-                                        <Link to="/register"  className="bg-white/60 text-white/100 hover:bg-white/100 hover:duration-500 text-sm md:text-2xl hover:text-black/100 p-4 px-10 md:px-[auto] rounded-full mr-10">
+                                        <Link to="/register"  className="bg-white/60 text-white/100 hover:bg-white/100 hover:duration-500 text-sm md:text-2xl hover:text-black/100 p-4 px-10 rounded-3xl mr-6">
                                         SIGN UP
                                         </Link>
                                 
-                                        <Link to="/login"  className="bg-white/60 text-white/100 hover:bg-white/100 hover:duration-500 text-sm md:text-2xl hover:text-black/100 p-4 px-10 md:px-[auto] rounded-full">
+                                        <Link to="/login"  className="bg-white/60 text-white/100 hover:bg-white/100 hover:duration-500 text-sm md:text-2xl hover:text-black/100 p-4 px-10 rounded-3xl">
                                         LOG IN
                                         </Link>
                         </div>
