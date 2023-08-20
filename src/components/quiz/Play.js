@@ -18,16 +18,15 @@ const shuffleArray = (array) => {
 };
 
 function Play() {
+        const [answeredQuestions, setAnsweredQuestions] = useState([]);
         const [questions, setQuestions] = useState([]);
         const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
         const [loading, setLoading] = useState(true);
         const [score, setScore] = useState(0);
         const [numberOfQuestions, setNumberOfQuestions] = useState(0);
-        // const [numberOfAnsweredQuestions, setNumberOfAnsweredQuestions] = useState(
-        //         numberOfCorrectAnswers + numberOfIncorrectAnswers);
         const [numberOfCorrectAnswers, setNumberOfCorrectAnswers] = useState(0);
         const [numberOfIncorrectAnswers, setNumberOfIncorrectAnswers] = useState(0);
-        
+        const [isGameOver, setIsGameOver] = useState(false);
         const [hints, setHints] = useState(6);
         const [time, setTime] = useState({ minutes: 2, seconds: 59 }); // Initial time
         const navigate = useNavigate();
@@ -109,82 +108,83 @@ function Play() {
         const shuffledAnswers = currentQuestion
                 ? questions[currentQuestionIndex].shuffledOptions
                 : [];
-
-        // useEffect(() => {
-        //         // Set the initial number of answered questions to 1 when the first question is rendered
-        //         if (currentQuestionIndex === 0) {
-        //             setNumberOfAnsweredQuestions(1);
-        //         //     setNumberOfCorrectAnswers(1);
-        //         //     setNumberOfIncorrectAnswers(1);
-        //         }
-        //     }, [currentQuestionIndex]);
+        useEffect(() => {
+                if (isGameOver) {
+                        endGame();
+                }
+        }, [numberOfCorrectAnswers, numberOfIncorrectAnswers, isGameOver])
         function handleClick(e) {
                 resetOptionsVisibility();
                 const selectedAnswer = e.target.innerHTML.toLowerCase();
                 const correctAnswer = currentQuestion.correctAnswer.toLowerCase();
 
-                if (selectedAnswer === correctAnswer) {
-                        handleCorrectAnswer();
-                } else {
-                        handleWrongAnswer();
-                }
+                if (!answeredQuestions.includes(currentQuestionIndex)) {
+                        if (selectedAnswer === correctAnswer) {
+                                handleCorrectAnswer();
+                        } else {
+                                handleWrongAnswer();
+                        }
 
-                // setNumberOfAnsweredQuestions(prevCount => prevCount + 1);
-                // const answeredQuestionsCount = currentQuestionIndex + 1;
-                // console.log("Number of answered questions:", numberOfAnsweredQuestions);
+                        if (currentQuestionIndex === questions.length - 1) {
+                                setTimeout(() => {
+                                        alert("Quiz has ended");
+                                        setIsGameOver(true);
+                                }, 1500);
+                        } else {
+                                setTimeout(() => {
+                                        setCurrentQuestionIndex(prevIndex => prevIndex + 1);
+                                }, 500);
+                        }
 
-                if (currentQuestionIndex === questions.length - 1) {
-                        setTimeout(() => {
-                        endGame();
-                        }, 1500);
-                } else {
-                        setTimeout(() => {
-                                setCurrentQuestionIndex(prevIndex => prevIndex + 1);
-                        }, 500);
+                        setAnsweredQuestions(prevAnswered => [...prevAnswered, currentQuestionIndex]);
+                        setUsedHintForQuestion(prevUsedHints => ({
+                                ...prevUsedHints,
+                                [currentQuestionIndex]: false,
+                        }));
                 }
-                setUsedHintForQuestion(prevUsedHints => ({
-                        ...prevUsedHints,
-                        [currentQuestionIndex]: false,
-                }));
         }
+
 
         function handleCorrectAnswer(e) {
 
                 M.toast({
                         html: "Correct Answer!",
                         classes: "bg-green-500  mt-[-600px] ml-3 w-[14rem] text-center p-3 relative rounded-xl",
-                        displayLength: 1500,
+                        displayLength: 1000,
                 });
                 setScore(prevScore => prevScore + 1);
                 setNumberOfCorrectAnswers(prevCount => prevCount + 1);
-                // setNumberOfAnsweredQuestions(prevCount => prevCount + 1)
         }
 
         function handleWrongAnswer() {
-                navigator.vibrate(1000);
+                navigator.vibrate(700);
                 M.toast({
                         html: "Wrong Answer!",
                         classes: "bg-red-500 mt-[-600px] w-[14rem] ml-3 p-3 text-center relative rounded-xl",
-                        displayLength: 1500,
+                        displayLength: 1000,
                 });
                 setNumberOfIncorrectAnswers(prevCount => prevCount + 1);
-                // setNumberOfAnsweredQuestions(prevCount => prevCount + 1)
         }
         function handleNextButton() {
                 resetOptionsVisibility();
+                setAnsweredQuestions([]);
                 if (currentQuestionIndex < questions.length - 1) {
                         setCurrentQuestionIndex(prevIndex => prevIndex + 1);
                 } else {
                         console.log("No more questions.");
                 }
         }
+
         function handlePreviousButton() {
+                resetOptionsVisibility();
+                setAnsweredQuestions([]);
                 if (currentQuestionIndex > 0) {
-                        setCurrentQuestionIndex(prevIndex => prevIndex - 1)
+                        setCurrentQuestionIndex(prevIndex => prevIndex - 1);
                 } else {
-                        console.log("No previous questions")
+                        console.log("No previous questions");
                 }
         }
+
         function handleQuitButton() {
                 const confirmButton = window.confirm("Are you sure you want to quit the quiz?");
                 if (confirmButton === true) {
@@ -221,28 +221,19 @@ function Play() {
         }
 
         function endGame() {
-
-                // alert("Quiz has ended!")
-
-                // setNumberOfCorrectAnswers(prevCount =>
-                //         prevCount + score
-                //     );
-                //     setNumberOfIncorrectAnswers(prevCount =>
-                //         prevCount + (numberOfAnsweredQuestions - score)
-                //     );
-            
+                const percentageScore = (score / numberOfQuestions) * 100;
                 const playerStats = {
-                        score: score,
+                        score: percentageScore,
                         numberOfQuestions: numberOfQuestions,
                         numberOfAnsweredQuestions: numberOfCorrectAnswers + numberOfIncorrectAnswers,
                         numberOfCorrectAnswers: numberOfCorrectAnswers,
                         numberOfIncorrectAnswers: numberOfIncorrectAnswers,
                         hintsUsed: 6 - hints,
                 };
-                alert("Quiz has ended");
+
                 console.log(playerStats);
                 setTimeout(() => {
-                navigate("/Play/quizSummary", { state: { playerStats } });
+                        navigate("/Play/quizSummary", { state: { playerStats } });
                 }, 1000);
         }
         return (
@@ -251,10 +242,10 @@ function Play() {
                                 <title>Quiz Page</title>
                         </Helmet>
 
-                        <div className="bg-[#02001c] p-10 min-h-screen bg-[url('https://transparenttextures.com/patterns/asfalt-light.png')]">
+                        <div className="pt-20 text-white bg-[#707278] min-h-screen bg-[url('https://transparenttextures.com/patterns/cubes.png')]">
                                 <div className="flex flex-col justify-center items-center">
-                                        <h5 className="text-white text-xl md:text-2xl pt-10 pb-8">Simple Quiz Mode</h5>
-                                        <div className="text-white rounded-r-xl border-l-8 border-blue-900 bg-blue-900/50 w-[275px] md:w-[600px] p-4 mx-20">
+                                        <h5 className="text-[14px] sm:text-2xl pt-10 pb-8">Simple Quiz Mode</h5>
+                                        <div className="text-white rounded-r-xl border-l-8 border-blue-900 bg-blue-500/60 shadow shadow-lg md:w-[600px] p-4 mx-2 md:mx-20">
                                                 <div className="flex justify-between text-sm md:text-xl">
                                                         <div>
 
@@ -263,8 +254,8 @@ function Play() {
                                                         </div>
                                                         <div>
                                                                 <p onClick={handleHints} className="cursor-pointer">
-                                                                        <Icon path={mdiLightbulbOn10} size={.8} className="inline text-blue-500" />
-                                                                        <span className="text-blue-500">{hints}</span>
+                                                                        <Icon path={mdiLightbulbOn10} size={.8} className="inline mb-[7px] text-blue-900 font-bold" />
+                                                                        <span className="text-blue-900 font-bold text-[14px]">{hints}</span>
                                                                 </p>
                                                                 <p className="">
                                                                         {currentQuestionIndex + 1} of {questions.length}
@@ -315,18 +306,18 @@ function Play() {
                                                 <button onClick={handlePreviousButton} className={`${currentQuestionIndex === 0
                                                         ? "bg-gray-400 cursor-not-allowed"
                                                         : "bg-sky-500 hover:bg-sky-400"
-                                                        } rounded p-2  px-3`}
+                                                        } rounded p-2  px-3 shadow shadow-lg`}
                                                         disabled={currentQuestionIndex === 0}>
                                                         &lt;&lt; Previous
                                                 </button>
                                                 <button onClick={handleNextButton} className={`${currentQuestionIndex === questions.length - 1
                                                         ? "bg-gray-400 cursor-not-allowed"
                                                         : "bg-green-600 hover:bg-green-400"
-                                                        }  p-2 px-3 md:mx-6 rounded`}
+                                                        }  p-2 px-3 md:mx-6 rounded  shadow shadow-lg`}
                                                         disabled={currentQuestionIndex === questions.length - 1}>
                                                         {currentQuestionIndex === questions.length - 1 ? "Finish" : "Next"} &gt;&gt;
                                                 </button>
-                                                <button onClick={handleQuitButton} className="bg-red-600 hover:bg-red-500 p-2 px-3 rounded">
+                                                <button onClick={handleQuitButton} className=" shadow shadow-lg bg-red-600 hover:bg-red-500 p-2 px-3 rounded">
                                                         Quit <span className="font-bold pl-1"> x</span>
                                                 </button>
                                         </div>
